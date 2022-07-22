@@ -4,14 +4,16 @@ import hashlib
 from Cryptodome.Cipher import AES
 from Cryptodome.Random import get_random_bytes
 from colorama import Fore, Style, init
-
+import time
 def DecryptDataBase():
     # copy contents into memory and decrypt in memeory leave orignal db as is
     # if changed create new data base encrypt it and delete the old one
     return
 
 def CreatePassword(entropy):
-    key = hashlib.sha256(entropy.encode())
+    salt = time.time()
+    cipher = entropy+str(salt)
+    key = hashlib.sha256(cipher.encode())
     return key.hexdigest()
     
 def CreateEntry():
@@ -25,7 +27,7 @@ def CreateEntry():
 def SaveEntry():
     return
 
-def Name():
+def Banner():
     print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + "")
     print('-'*65)
     print(r'                                                                   ')
@@ -42,5 +44,5 @@ def Name():
     print("                       A project by TheTypingFox                    ")
     print('-'*65 + Style.RESET_ALL)
 
-Name()
 # CreateEntry()
+print(CreateEntry())
