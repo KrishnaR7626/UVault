@@ -5,6 +5,17 @@ from Cryptodome.Cipher import AES
 from Cryptodome.Random import get_random_bytes
 from colorama import Fore, Style, init
 import time
+import sqlite3
+
+def CreateDataBase():
+    Connection = sqlite3.connect('UVault.sql') 
+    Cursor = Connection.cursor()
+    Cursor.execute(
+        '''
+        CREATE TABLE IF NOT EXISTS Passwords
+        ([password_name] TEXT, [password] TEXT)
+        ''')
+
 def DecryptDataBase():
     # copy contents into memory and decrypt in memeory leave orignal db as is
     # if changed create new data base encrypt it and delete the old one
@@ -45,4 +56,5 @@ def Banner():
     print('-'*65 + Style.RESET_ALL)
 
 # CreateEntry()
-print(CreateEntry())
+# print(CreateEntry())
+CreateDataBase()
