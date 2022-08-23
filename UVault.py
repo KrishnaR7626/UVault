@@ -8,17 +8,22 @@ import time
 import os
 import sqlite3
 import sys
+import getpass
+ 
 
 def CreateDataBase():
     Connection = sqlite3.connect('UVault.sql') 
     Cursor = Connection.cursor()
     Cursor.execute(
         '''
-        CREATE TABLE IF NOT EXISTS Passwords
+        CREATE TABLE Passwords
         ([password_name] TEXT, [password] TEXT)
         ''')
 
-def DecryptDataBase():
+def generatePassword():
+    return
+
+def DecryptDataBase(key):
     # copy contents into memory and decrypt in memeory leave orignal db as is
     # if changed create new data base encrypt it and delete the old one
     return
@@ -38,22 +43,24 @@ def CheckAnswer(answer):
     else:
         return False
 
-def CreatePassword(entropy):
+def CreatePasswordKey(entropy):
     salt = time.time()
     cipher = entropy+str(salt)
     key = hashlib.sha256(cipher.encode())
     return key.hexdigest()
     
 def CreateEntry():
-    # different Tier Passwords
     purpose = input("What would you like to name this password?\n")
     entropy = input("Please input any random characters for entropy\n")
-    password = CreatePassword(entropy)
+    password = CreatePasswordKey(entropy)
     print("\nPassword created \n{}: {}".format(purpose,password))
     return purpose, password
 
 def SaveEntry():
     return
+
+def newline(numberOfNewLines):
+    print("\n"*numberOfNewLines)
 
 def Banner():
     print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + "")
@@ -75,13 +82,26 @@ def Banner():
 
 Banner()
 # CreateEntry()
-# print(CreateEntry())
 # CreateDataBase()
+
 if CheckState():
-    print("Would you like to retrieve a password?")
+    print("Please enter key to decrypt the password database: ")
+    DecryptKey = getpass.getpass()
+    DecryptDataBase(DecryptKey)
+    newline(2)
+    print("Select the number of the operation you would like to perform:")
+    print("1 \tRetrieve a password?")
+    print("2 \tCreate a password?")
+    print("3 \tRemove a password?")
+    print("4 \tChange a password?")
+    newline(1)
+    choice = input()
+    newline(1)
+    print(choice)
 else:
     newDB = input("would you like to create a new Password Database? (Y/N) ")
     if(CheckAnswer(newDB)):
         CreateDataBase()
     else:
+        print("Goodbye!")
         sys.exit()
