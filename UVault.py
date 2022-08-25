@@ -9,6 +9,7 @@ import os
 import sqlite3
 import sys
 import getpass
+import random
  
 
 def CreateDataBase():
@@ -48,6 +49,12 @@ def CreatePasswordKey(entropy):
     cipher = entropy+str(salt)
     key = hashlib.sha256(cipher.encode())
     return key.hexdigest()
+
+def GeneratePin(length):
+    pin = ""
+    for i in range(length):
+        pin+=random.randint(1,10)
+    return pin
     
 def CreateEntry():
     purpose = input("What would you like to name this password?\n")
@@ -59,8 +66,11 @@ def CreateEntry():
 def SaveEntry():
     return
 
-def newline(numberOfNewLines):
+def brk(numberOfNewLines):
     print("\n"*numberOfNewLines)
+def display(text, brk):
+    print(text)
+    brk(brk)
 
 def Banner():
     print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + "")
@@ -85,19 +95,17 @@ Banner()
 # CreateDataBase()
 
 if CheckState():
-    print("Please enter key to decrypt the password database: ")
+    display("Please enter key to decrypt the password database: ", 0)
     DecryptKey = getpass.getpass()
     DecryptDataBase(DecryptKey)
-    newline(2)
-    print("Select the number of the operation you would like to perform:")
-    print("1 \tRetrieve a password?")
-    print("2 \tCreate a password?")
-    print("3 \tRemove a password?")
-    print("4 \tChange a password?")
-    newline(1)
+
+    display("Select the number of the operation you would like to perform:", 0)
+    display("1 \tRetrieve a password?",0)
+    display("2 \tCreate a password?",0)
+    display("3 \tRemove a password?",0)
+    display("4 \tChange a password?",1)
     choice = input()
-    newline(1)
-    print(choice)
+    display(choice,1)
 else:
     newDB = input("would you like to create a new Password Database? (Y/N) ")
     if(CheckAnswer(newDB)):
