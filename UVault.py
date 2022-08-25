@@ -11,39 +11,65 @@ import sys
 import getpass
 import random
  
-
-def CreateDataBase():
+#========================================================================================================
+# Database Functions
+def createDatabase():
     Connection = sqlite3.connect('UVault.sql') 
     Cursor = Connection.cursor()
-    Cursor.execute(
-        '''
-        CREATE TABLE Passwords
-        ([password_name] TEXT, [password] TEXT)
-        ''')
+    Cursor.execute("CREATE TABLE Passwords (purpose TEXT, password TEXT)")
 
-def generatePassword():
+def encryptDatabase(key):
     return
 
-def DecryptDataBase(key):
-    # copy contents into memory and decrypt in memeory leave orignal db as is
+def decryptDatabase(key):
+    # copy contents into memory and decrypt in memory leave orignal db as is
     # if changed create new data base encrypt it and delete the old one
     return
 
-def CheckState():
-    directories = os.listdir()
-    if "UVault.sql" in directories:
-        print("Password database found")
-        return True
-    else:
-        print("Password database not found")
-        return False
+def checksum():
+    return
 
+def addEntry(purpose, password):
+    try:
+        Cursor = sqlite3.connect('UVault.sql').cursor()
+        Cursor.execute("INSERT INTO Passwords Values ({}, {})".format(purpose, password))
+    except:
+        print("Error adding entry to database")    
+
+def removeEntry():
+    return
+
+def changeEntry():
+    return
+
+def getEntry():
+    return
+
+#========================================================================================================
+# Main helper functions
 def CheckAnswer(answer):
     if answer == 'Y' or answer == 'y':
         return True
     else:
         return False
 
+def CheckState():
+    directories = os.listdir()
+    if "UVault.sql" in directories:
+        return True
+    else:
+        print("Password database not found")
+        return False
+
+def CreateNewPassword():
+    purpose = input("What would you like to name this password?\n")
+    entropy = input("Please input any random characters for entropy\n")
+    password = CreatePasswordKey(entropy)
+    print("\nPassword created \n{}: {}".format(purpose,password))
+    return purpose, password
+
+#========================================================================================================
+# Password Generation Functions
 def CreatePasswordKey(entropy):
     salt = time.time()
     cipher = entropy+str(salt)
@@ -56,21 +82,17 @@ def GeneratePin(length):
         pin+=random.randint(1,10)
     return pin
     
-def CreateEntry():
-    purpose = input("What would you like to name this password?\n")
-    entropy = input("Please input any random characters for entropy\n")
-    password = CreatePasswordKey(entropy)
-    print("\nPassword created \n{}: {}".format(purpose,password))
-    return purpose, password
-
-def SaveEntry():
+def generatePassword():
     return
 
-def brk(numberOfNewLines):
-    print("\n"*numberOfNewLines)
-def display(text, brk):
+
+#========================================================================================================
+
+#========================================================================================================
+# User Interface Functions
+def display(text, numNL):
     print(text)
-    brk(brk)
+    print("\n"*numNL)
 
 def Banner():
     print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + "")
@@ -90,26 +112,30 @@ def Banner():
     print('-'*65 + Style.RESET_ALL)
     print("\n\n\n")
 
-Banner()
+#========================================================================================================
+#EntryPoint
+
+# Banner()
 # CreateEntry()
 # CreateDataBase()
 
-if CheckState():
-    display("Please enter key to decrypt the password database: ", 0)
-    DecryptKey = getpass.getpass()
-    DecryptDataBase(DecryptKey)
+# if CheckState():
+#     display("Password database found", 0)
+#     display("Please enter key to decrypt the password database: ", 0)
+#     DecryptKey = getpass.getpass()
+#     DecryptDataBase(DecryptKey)
 
-    display("Select the number of the operation you would like to perform:", 0)
-    display("1 \tRetrieve a password?",0)
-    display("2 \tCreate a password?",0)
-    display("3 \tRemove a password?",0)
-    display("4 \tChange a password?",1)
-    choice = input()
-    display(choice,1)
-else:
-    newDB = input("would you like to create a new Password Database? (Y/N) ")
-    if(CheckAnswer(newDB)):
-        CreateDataBase()
-    else:
-        print("Goodbye!")
-        sys.exit()
+#     display("Select the number of the operation you would like to perform:", 0)
+#     display("1 \tCreate a password?",0)
+#     display("2 \tRetrieve a password?",0)
+#     display("3 \tChange a password?",0)
+#     display("4 \tRemove a password?",1)
+#     choice = input()
+#     display(choice,1)
+# else:
+#     newDB = input("would you like to create a new Password Database? (Y/N) ")
+#     if(CheckAnswer(newDB)):
+#         CreateDataBase()
+#     else:
+#         print("Goodbye!")
+#         sys.exit()
