@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import hashlib
+from operator import truediv
 from Cryptodome.Cipher import AES
 from Cryptodome.Random import get_random_bytes
 from colorama import Fore, Style, init
@@ -14,9 +15,14 @@ import random
 #========================================================================================================
 # Database Functions
 def createDatabase():
-    Connection = sqlite3.connect('UVault.sql') 
-    Cursor = Connection.cursor()
-    Cursor.execute("CREATE TABLE Passwords (purpose TEXT, password TEXT)")
+    try:
+        Connection = sqlite3.connect('UVault.sql') 
+        Cursor = Connection.cursor()
+        Cursor.execute("CREATE TABLE Passwords (purpose TEXT, password TEXT)")
+        addEntry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
+        return True
+    except:
+        return False
 
 def encryptDatabase(key):
     return
@@ -27,7 +33,11 @@ def decryptDatabase(key):
     return
 
 def checksum():
-    return
+    value = retrieveEntry("checksum")
+    if value == "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5":
+        return True
+    else:
+        return False
 
 def addEntry(purpose, password):
     try:
@@ -42,44 +52,47 @@ def removeEntry():
 def changeEntry():
     return
 
-def getEntry():
+def retrieveEntry(purpose):
     return
 
 #========================================================================================================
 # Main helper functions
-def CheckAnswer(answer):
+def checkAnswer(answer):
     if answer == 'Y' or answer == 'y':
         return True
     else:
         return False
 
-def CheckState():
-    directories = os.listdir()
-    if "UVault.sql" in directories:
+def checkState():
+    files = os.listdir()
+    if "UVault.sql" in files:
         return True
     else:
         print("Password database not found")
         return False
 
-def CreateNewPassword():
+def createNewPassword():
     purpose = input("What would you like to name this password?\n")
     entropy = input("Please input any random characters for entropy\n")
     password = CreatePasswordKey(entropy)
     print("\nPassword created \n{}: {}".format(purpose,password))
     return purpose, password
 
+def errorCodes(code):
+    return
+
 #========================================================================================================
 # Password Generation Functions
-def CreatePasswordKey(entropy):
+def createPasswordKey(entropy):
     salt = time.time()
     cipher = entropy+str(salt)
     key = hashlib.sha256(cipher.encode())
     return key.hexdigest()
 
-def GeneratePin(length):
+def generatePin(length):
     pin = ""
     for i in range(length):
-        pin+=random.randint(1,10)
+        pin+=str(random.randint(0,9))
     return pin
     
 def generatePassword():
@@ -101,7 +114,7 @@ def display(text, numNL):
     print(text)
     print("\n"*numNL)
 
-def Banner():
+def banner():
     print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + "")
     print('-'*65)
     print(r'                                                                   ')
@@ -146,5 +159,3 @@ def Banner():
 #     else:
 #         print("Goodbye!")
 #         sys.exit()
-for i in range(100):
-    print(generatePassword())
