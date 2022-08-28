@@ -18,7 +18,7 @@ def createDatabase():
     try:
         Connection = sqlite3.connect('UVault.sql') 
         Cursor = Connection.cursor()
-        Cursor.execute("CREATE TABLE Passwords (purpose TEXT, password TEXT)")
+        Cursor.execute("CREATE TABLE Passwords(purpose TEXT, password TEXT)")
         addEntry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
         return True
     except:
@@ -40,20 +40,26 @@ def checksum():
         return False
 
 def addEntry(purpose, password):
-    try:
-        Cursor = sqlite3.connect('UVault.sql').cursor()
-        Cursor.execute("INSERT INTO Passwords Values ({}, {})".format(purpose, password))
-    except:
-        print("Error adding entry to database")    
+    # try:
+    connect = sqlite3.connect('UVault.sql') 
+    cursor = connect.cursor()
+    params = (purpose, password)
+    cursor.execute("INSERT INTO Passwords VALUES(?, ?)", params)
+    # except:
+        # print("Error adding entry to database")    
 
-def removeEntry():
+def removeEntry(purpose):
     return
 
-def changeEntry():
+def changeEntry(purpose, newPassword):
+    removeEntry(purpose)
+    addEntry(purpose, newPassword)
     return
 
 def retrieveEntry(purpose):
-    return
+    Cursor = sqlite3.connect('UVault.sql').cursor()
+    password = Cursor.execute("SELECT password FROM Passwords WHERE purpose = ?", (purpose,))
+    return password
 
 #========================================================================================================
 # Main helper functions
@@ -159,3 +165,8 @@ def banner():
 #     else:
 #         print("Goodbye!")
 #         sys.exit()
+createDatabase()
+# addEntry("abc","123")
+# b= retrieveEntry("abc")
+# for i in b:
+#     print(i)
