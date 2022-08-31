@@ -2,6 +2,7 @@
 
 import hashlib
 from operator import truediv
+from Entry import Entry
 from Cryptodome.Cipher import AES
 from Cryptodome.Random import get_random_bytes
 from colorama import Fore, Style, init
@@ -16,21 +17,15 @@ import random
 # Database Functions
 def createDatabase():
     try:
-        Connection = sqlite3.connect('UVault.sql') 
+        Connection = sqlite3.connect('UVault.db') 
         Cursor = Connection.cursor()
-        Cursor.execute("CREATE TABLE Passwords(purpose TEXT, password TEXT)")
-        addEntry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
+        Cursor.execute("CREATE TABLE Passwords(purpose text, password text)")
+        addEntry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5", Cursor)
+        Connection.commit()
+        Connection.close()
         return True
     except:
         return False
-
-def encryptDatabase(key):
-    return
-
-def decryptDatabase(key):
-    # copy contents into memory and decrypt in memory leave orignal db as is
-    # if changed create new data base encrypt it and delete the old one
-    return
 
 def checksum():
     value = retrieveEntry("checksum")
@@ -39,12 +34,19 @@ def checksum():
     else:
         return False
 
-def addEntry(purpose, password):
+def addEntry(purpose, password, cursor):
     # try:
-    connect = sqlite3.connect('UVault.sql') 
-    cursor = connect.cursor()
-    params = (purpose, password)
-    cursor.execute("INSERT INTO Passwords VALUES(?, ?)", params)
+    if cursor!= None:
+        params = (purpose, password)
+        Cursor.execute("INSERT INTO Passwords VALUES(?, ?)", params)
+    else:
+        Connection = sqlite3.connect('UVault.db') 
+        Cursor = Connection.cursor()
+        params = (purpose, password)
+        Cursor.execute("INSERT INTO Passwords VALUES(?, ?)", params)
+        Connection.commit()
+        Connection.close()
+    return 1
     # except:
         # print("Error adding entry to database")    
 
@@ -57,9 +59,22 @@ def changeEntry(purpose, newPassword):
     return
 
 def retrieveEntry(purpose):
-    Cursor = sqlite3.connect('UVault.sql').cursor()
-    password = Cursor.execute("SELECT password FROM Passwords WHERE purpose = ?", (purpose,))
+    Connection = sqlite3.connect('UVault.db') 
+    Cursor = Connection.cursor()
+    Cursor.execute("SELECT password FROM Passwords WHERE purpose = ?", (purpose,))
+    password = Cursor.fetchone()
+    Connection.close()
     return password
+#========================================================================================================
+# File encryption functions
+
+def encryptDatabase(key):
+    return
+
+def decryptDatabase(key):
+    # copy contents into memory and decrypt in memory leave orignal db as is
+    # if changed create new data base encrypt it and delete the old one
+    return
 
 #========================================================================================================
 # Main helper functions
@@ -165,8 +180,12 @@ def banner():
 #     else:
 #         print("Goodbye!")
 #         sys.exit()
-createDatabase()
+# createDatabase()
+# print(retrieveEntry("checksum"))
 # addEntry("abc","123")
 # b= retrieveEntry("abc")
 # for i in b:
 #     print(i)
+entry = Entry("asdf", "1234")
+print(entry.purpose)
+print(entry.password)
