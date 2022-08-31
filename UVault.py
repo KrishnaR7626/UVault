@@ -16,54 +16,22 @@ import random
 #========================================================================================================
 # Database Functions
 def createDatabase():
-    try:
-        Connection = sqlite3.connect('UVault.db') 
-        Cursor = Connection.cursor()
-        Cursor.execute("CREATE TABLE Passwords(purpose text, password text)")
-        addEntry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5", Cursor)
-        Connection.commit()
-        Connection.close()
-        return True
-    except:
-        return False
+    Cursor.execute("CREATE TABLE Passwords(purpose text, password text)")
+    entry = Entry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
+    addEntry(entry)
 
-def checksum():
-    value = retrieveEntry("checksum")
-    if value == "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5":
-        return True
-    else:
-        return False
+def addEntry(entry):
+    Cursor.execute("INSERT INTO Passwords VALUES(?, ?)", (entry.purpose, entry.password))
 
-def addEntry(purpose, password, cursor):
-    # try:
-    if cursor!= None:
-        params = (purpose, password)
-        Cursor.execute("INSERT INTO Passwords VALUES(?, ?)", params)
-    else:
-        Connection = sqlite3.connect('UVault.db') 
-        Cursor = Connection.cursor()
-        params = (purpose, password)
-        Cursor.execute("INSERT INTO Passwords VALUES(?, ?)", params)
-        Connection.commit()
-        Connection.close()
-    return 1
-    # except:
-        # print("Error adding entry to database")    
-
-def removeEntry(purpose):
-    return
-
-def changeEntry(purpose, newPassword):
-    removeEntry(purpose)
-    addEntry(purpose, newPassword)
-    return
+def removeEntry(entry):
+    Cursor.execute("DELETE FROM Passwords WHERE purpose = ?", (entry.purpose,))
+    
+def changeEntry(entry):
+    Cursor.execute("UPDATE Passwords SET password = ? WHERE purpose = ?",(entry.password, entry.purpose))
 
 def retrieveEntry(purpose):
-    Connection = sqlite3.connect('UVault.db') 
-    Cursor = Connection.cursor()
     Cursor.execute("SELECT password FROM Passwords WHERE purpose = ?", (purpose,))
     password = Cursor.fetchone()
-    Connection.close()
     return password
 #========================================================================================================
 # File encryption functions
@@ -75,6 +43,13 @@ def decryptDatabase(key):
     # copy contents into memory and decrypt in memory leave orignal db as is
     # if changed create new data base encrypt it and delete the old one
     return
+
+def checksum():
+    value = retrieveEntry("checksum")
+    if value == "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5":
+        return True
+    else:
+        return False
 
 #========================================================================================================
 # Main helper functions
@@ -99,8 +74,6 @@ def createNewPassword():
     print("\nPassword created \n{}: {}".format(purpose,password))
     return purpose, password
 
-def errorCodes(code):
-    return
 
 #========================================================================================================
 # Password Generation Functions
@@ -186,6 +159,27 @@ def banner():
 # b= retrieveEntry("abc")
 # for i in b:
 #     print(i)
-entry = Entry("asdf", "1234")
-print(entry.purpose)
-print(entry.password)
+
+
+# testing SQL DB calls
+# def printall():
+#     Cursor.execute("SELECT purpose FROM Passwords")
+#     print(Cursor.fetchall())
+Connection = sqlite3.connect('UVault.db') 
+Cursor = Connection.cursor()
+# createDatabase()
+# printall()
+# entry = Entry("abc", 123)
+# addEntry(entry)
+# addEntry(Entry("1234","12345123"))
+# addEntry(Entry("abd","afe"))
+# addEntry(Entry("234234","sferg"))
+# printall()
+# entry.password = "1235565"
+# changeEntry(entry)
+# printall()
+# removeEntry(entry)
+# printall()
+
+Connection.commit()
+Connection.close()
