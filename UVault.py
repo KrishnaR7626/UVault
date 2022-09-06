@@ -2,9 +2,9 @@
 
 import hashlib
 from operator import truediv
-from Entry import Entry
-from Cryptodome.Cipher import AES
-from Cryptodome.Random import get_random_bytes
+from Resources.Entry import Entry
+# from Cryptodome.Cipher import AES
+# from Cryptodome.Random import get_random_bytes
 from colorama import Fore, Style, init
 import time
 import os
@@ -61,7 +61,7 @@ def checkAnswer(answer):
 
 def checkState():
     files = os.listdir()
-    if "UVault.sql" in files:
+    if "UVault.db" in files:
         return True
     else:
         print("Password database not found")
@@ -109,7 +109,7 @@ def display(text, numNL):
     print("\n"*numNL)
 
 def banner():
-    print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + "")
+    print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + + "")
     print('-'*65)
     print(r'                                                                   ')
     print(r'88        88  8b           d8                         88           ')
@@ -129,7 +129,7 @@ def banner():
 #========================================================================================================
 #EntryPoint
 
-# Banner()
+banner()
 # CreateEntry()
 # CreateDataBase()
 
@@ -162,19 +162,19 @@ def banner():
 
 
 # testing SQL DB calls
-# def printall():
-#     Cursor.execute("SELECT purpose FROM Passwords")
-#     print(Cursor.fetchall())
+def printall():
+    Cursor.execute("SELECT purpose FROM Passwords")
+    print(Cursor.fetchall())
 Connection = sqlite3.connect('UVault.db') 
 Cursor = Connection.cursor()
-# createDatabase()
-# printall()
+createDatabase()
+printall()
 # entry = Entry("abc", 123)
 # addEntry(entry)
-# addEntry(Entry("1234","12345123"))
-# addEntry(Entry("abd","afe"))
-# addEntry(Entry("234234","sferg"))
-# printall()
+addEntry(Entry("1234","12345123"))
+addEntry(Entry("abd","afe"))
+addEntry(Entry("234234","sferg"))
+printall()
 # entry.password = "1235565"
 # changeEntry(entry)
 # printall()
