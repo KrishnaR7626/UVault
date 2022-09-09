@@ -1,8 +1,9 @@
 from colorama import Fore, Style, init
 # UI function
 def display(text, numNL):
+    print("\n")
     print(text)
-    print("\n"*numNL)
+    print("\n")
 
 def banner():
     print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + + "")

@@ -3,9 +3,10 @@ import hashlib
 import os
 import time
 
-def createPasswordKey(entropy):
+def generateKey():
+    entropy = input("Please input any random characters for entropy\n")
     salt = time.time()
-    cipher = entropy+str(salt)
+    cipher = entropy+str(salt)  
     key = hashlib.sha256(cipher.encode())
     return key.hexdigest()
 
@@ -16,7 +17,7 @@ def generatePin(length):
     return pin
     
 def generatePassword():
-    path = os.getcwd()+"/WordList.txt"
+    path = "../Resources/WordList.txt"
     try:
         file = open(path, 'r')
     except:
