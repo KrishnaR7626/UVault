@@ -3,34 +3,73 @@ import sqlite3
 import os
 import sys
 os.chdir("..")
-sys.path.insert(1, '{}/Resources'.format(os.getcwd))
-
-def testDataBase():
-    return
-
-def testEntryObject():
-    return
-
-def testPasswordGeneration():
-    return
-
-def testEncryption():
-    return
-
-testDataBase()
-testEntryObject()
-testPasswordGeneration()
-testEncryption()
+path = os.getcwd()+'/Python'
+sys.path.insert(1, path)
+from Entry import Entry
 
 
-# CreateEntry()
-# CreateDataBase()
+os.chdir("Tests")
 
-# if CheckState():
-#     display("Password database found", 0)
-#     display("Please enter key to decrypt the password database: ", 0)
-#     DecryptKey = getpass.getpass()
-#     DecryptDataBase(DecryptKey)
+# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
+# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
+# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
+# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
+# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
+class UVaultTests(unittest.TestCase):
+    def testDataBase(self):
+        pass
+        # createDatabase(Cursor)
+        # entry1 = Entry("User1", "Password1")
+        # entry2 = Entry("User2", "Password2")
+        # entry3 = Entry("User3", "Password3")
+        # entry4 = Entry("User4", "Password4")
+        # entry5 = Entry("User5", "Password5")
+        # entry6 = Entry("User6", "Password6")
+        # addEntry(Cursor, entry1)    
+        # addEntry(Cursor, entry2)
+        # addEntry(Cursor, entry3)
+        # addEntry(Cursor, entry4)
+        # addEntry(Cursor, entry5)
+        # addEntry(Cursor, entry6)
+
+
+    def testEntryObject(self):
+        entry1 = Entry("User1", "Password1")
+        entry2 = Entry("User2", "Password2")
+        entry3 = Entry("User3", "Password3")
+        self.assertEqual(entry1.purpose , "User1")
+        self.assertEqual(entry2.purpose , "User2")
+        self.assertEqual(entry3.purpose , "User3")    
+        self.assertEqual(entry1.password , "Password1")
+        self.assertEqual(entry2.password , "Password2")
+        self.assertEqual(entry3.password , "Password3")    
+        entry1.password = "Password 7"
+        entry2.purpose = "User 8"
+        entry3.purpose = "User 9"
+        entry3.password = "Password 9"
+        self.assertEqual(entry1.purpose , "User1")
+        self.assertEqual(entry2.purpose , "User 8")
+        self.assertEqual(entry3.purpose , "User 9")    
+        self.assertEqual(entry1.password , "Password 7")
+        self.assertEqual(entry2.password , "Password2")
+        self.assertEqual(entry3.password , "Password 9")    
+        
+
+    def testPasswordGeneration(self):
+        pass
+
+    def testEncryption(self):
+        pass
+    # Connection = sqlite3.connect('UVault.db') 
+    # Cursor = Connection.cursor()
+    # testDataBase()
+    # testPasswordGeneration()
+    # testEncryption()
+    # os.remove("")
+if __name__ == '__main__':
+    unittest.main()
+
+
 
 #     display("Select the number of the operation you would like to perform:", 0)
 #     display("1 \tCreate a password?",0)
@@ -60,7 +99,6 @@ testEncryption()
 #     print(Cursor.fetchall())
 # Connection = sqlite3.connect('UVault.db') 
 # Cursor = Connection.cursor()
-# dbfs.createDatabase()
 # printall()
 # entry = Entry("abc", 123)
 # addEntry(entry)
