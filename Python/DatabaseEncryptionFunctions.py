@@ -1,7 +1,7 @@
 # File encryption functions
 import DatabaseFunctions
 import cryptography
-from DatabaseFunctions import removeEntry
+from DatabaseFunctions import retrieveEntry
 
 def encryptDatabase(key):
     

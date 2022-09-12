@@ -10,14 +10,15 @@ def generateKey():
     key = hashlib.sha256(cipher.encode())
     return key.hexdigest()
 
-def generatePin(length):
+def generatePin():
+    length = input("How long would you like the pin to be\n")
     pin = ""
     for i in range(length):
         pin+=str(random.randint(0,9))
     return pin
     
 def generatePassword():
-    path = "../Resources/WordList.txt"
+    path = "/Resources/WordList.txt"
     try:
         file = open(path, 'r')
     except:

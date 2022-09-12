@@ -13,8 +13,10 @@ def checkAnswer(answer):
         return False
 
 def checkState():
+    initial = os.getcwd()
     os.chdir("../Database")
     files = os.listdir()
+    os.chdir(initial)
     if "UVault.db" in files:
         return True
     else:
@@ -46,5 +48,5 @@ def createNewPassword():
     
     purpose = input("What would you like to name this password?\n")
     display("\nPassword entry created \n{}: {}".format(purpose,password))
-
-    return purpose, password
+    entry = Entry(purpose, password)
+    return entry
