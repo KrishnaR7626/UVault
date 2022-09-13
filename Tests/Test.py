@@ -63,6 +63,19 @@ class UVaultTests(unittest.TestCase):
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User4"), "Password 4")
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User5"), "Password 5")
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User6"), "Password 6")
+        DatabaseFunctions.removeEntry(Cursor, "User3")
+        DatabaseFunctions.removeEntry(Cursor, "User4")
+        DatabaseFunctions.removeEntry(Cursor, "User5")
+        DatabaseFunctions.removeEntry(Cursor, "User6")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User1"), None)
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User2"), None)
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User3"), None)
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User4"), None)
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User5"), None)
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User6"), None)
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "checksum"), "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
+
+
 
     #Done
     def testEntryObject(self):
@@ -95,11 +108,31 @@ class UVaultTests(unittest.TestCase):
         for length in range(100):
             self.assertEqual(len(PasswordGenerationFunctions.generatePin(length)) , length)
 
+        for i in range(100):
+            os.chdir("..")
+            path = os.getcwd()+'/Python/Resources/WordList.txt'
+            os.chdir("Tests")
+            password = PasswordGenerationFunctions.generatePassword(path)
+            num = 0
+            chars = 0
+            for char in password:
+                if char.isdigit():
+                    num+=1
+                chars+=1
+            if not chars>=20 and num >= 8:
+                #if generated password is not strong enough it fails
+                self.fail()
+            
     def testEncryptionFunctions(self):
-        pass
-   
+
+        # Checksum Function Testing
+        self.assertTrue(DatabaseEncryptionFunctions.checksum(Cursor))
+        DatabaseFunctions.removeEntry(Cursor, "checksum")
+        self.assertFalse(DatabaseEncryptionFunctions.checksum(Cursor))
+        DatabaseFunctions.addEntry(Cursor, Entry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5"))
+        self.assertTrue(DatabaseEncryptionFunctions.checksum(Cursor))
+
+
 if __name__ == '__main__':
     unittest.main()
-    
-
-
+    Connection.close()

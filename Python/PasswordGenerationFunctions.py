@@ -16,15 +16,18 @@ def generatePin(length):
         pin+=str(random.randint(0,9))
     return pin
     
-def generatePassword():
-    path = os.getcwd()+"/Resources/WordList.txt"
+def generatePassword(path):
+    if path == None:
+        path = os.getcwd()+"/Resources/WordList.txt"
     try:
         file = open(path, 'r')
     except:
-        print("Error accessing resources, run script within intended directory or check Resources folder for missing files")
+        print("Error accessing resources, invalid path \n{}".format(path))
+
     words = file.readlines()
     password = ""
     for i in range(3):
         password+=words[random.randint(0, len(words)-1)][:-1]
         password+=str(random.randint(0,1000))
+    file.close()
     return password
