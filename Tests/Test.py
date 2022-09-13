@@ -2,8 +2,14 @@ import unittest
 import sqlite3
 import os
 import sys
+import time
+import random
+import hashlib
+
+# Importing procedure
 os.chdir("..")
 path = os.getcwd()+'/Python'
+
 sys.path.insert(1, path)
 from Entry import Entry
 import DatabaseFunctions as DatabaseFunctions
@@ -11,30 +17,54 @@ import PasswordGenerationFunctions as PasswordGenerationFunctions
 import DatabaseEncryptionFunctions as DatabaseEncryptionFunctions
 os.chdir("Tests")
 
-# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
-# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
-# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
-# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
-# sys.path.insert(1, '{}/Resources'.format(os.getcwd))
+# Removes previous Entry so that it can create a fresh database
+os.remove('UVault.db')
+
+
 Connection = sqlite3.connect('UVault.db') 
 Cursor = Connection.cursor()
 class UVaultTests(unittest.TestCase):
+    #Done
     def testDataBase(self):
         DatabaseFunctions.createDatabase(Cursor)
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "checksum"), "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
         entry1 = Entry("User1", "Password1")
         entry2 = Entry("User2", "Password2")
         entry3 = Entry("User3", "Password3")
         entry4 = Entry("User4", "Password4")
         entry5 = Entry("User5", "Password5")
         entry6 = Entry("User6", "Password6")
+
         DatabaseFunctions.addEntry(Cursor, entry1)    
         DatabaseFunctions.addEntry(Cursor, entry2)
         DatabaseFunctions.addEntry(Cursor, entry3)
         DatabaseFunctions.addEntry(Cursor, entry4)
         DatabaseFunctions.addEntry(Cursor, entry5)
         DatabaseFunctions.addEntry(Cursor, entry6)
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "checksum"), "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User1"), "Password1")        
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User2"), "Password2")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User3"), "Password3")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User4"), "Password4")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User5"), "Password5")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User6"), "Password6")
 
+        DatabaseFunctions.removeEntry(Cursor, "User1")
+        DatabaseFunctions.removeEntry(Cursor, "User2")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User1"), None)        
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User2"), None)
 
+        DatabaseFunctions.changeEntry(Cursor, Entry("User3", "Password 3"))        
+        DatabaseFunctions.changeEntry(Cursor, Entry("User4", "Password 4"))
+        DatabaseFunctions.changeEntry(Cursor, Entry("User5", "Password 5"))
+        DatabaseFunctions.changeEntry(Cursor, Entry("User6", "Password 6"))
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "checksum"), "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User3"), "Password 3")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User4"), "Password 4")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User5"), "Password 5")
+        self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User6"), "Password 6")
+
+    #Done
     def testEntryObject(self):
         entry1 = Entry("User1", "Password1")
         entry2 = Entry("User2", "Password2")
@@ -57,65 +87,22 @@ class UVaultTests(unittest.TestCase):
         self.assertEqual(entry3.password , "Password 9")
 
     def testPasswordGeneration(self):
+        salt = time.time()
+        entropies = ["abacus","abadan","abaft","abamp","abase","abash","abasia","abasic","abate","abatic","abatis","abaya","abbacy","abbe","abbess","abbey","abbot","abcs","abdias","abduce"]
+        for entropy in entropies:
+            self.assertEqual(PasswordGenerationFunctions.generateKey(entropy, salt), hashlib.sha256((entropy+str(salt)).encode()).hexdigest())
+        def generatePin(length):
+            pin = ""
+            for i in range(length):
+                pin+=str(random.randint(0,9))
+            return pin
         pass
 
     def testEncryption(self):
         pass
-    def cleanup(self):
-        os.remove("UVault.db")
-
-    # Connection = sqlite3.connect('UVault.db') 
-    # Cursor = Connection.cursor()
-    # testDataBase()
-    # testPasswordGeneration()
-    # testEncryption()
-    # os.remove("")
-    
+   
 if __name__ == '__main__':
     unittest.main()
     
 
 
-#     display("Select the number of the operation you would like to perform:", 0)
-#     display("1 \tCreate a password?",0)
-#     display("2 \tRetrieve a password?",0)
-#     display("3 \tChange a password?",0)
-#     display("4 \tRemove a password?",1)
-#     choice = input()
-#     display(choice,1)
-# else:
-#     newDB = input("would you like to create a new Password Database? (Y/N) ")
-#     if(CheckAnswer(newDB)):
-#         CreateDataBase()
-#     else:
-#         print("Goodbye!")
-#         sys.exit()
-# createDatabase()
-# print(retrieveEntry("checksum"))
-# addEntry("abc","123")
-# b= retrieveEntry("abc")
-# for i in b:
-#     print(i)
-
-
-# testing SQL DB calls
-# def printall():
-#     Cursor.execute("SELECT purpose FROM Passwords")
-#     print(Cursor.fetchall())
-# Connection = sqlite3.connect('UVault.db') 
-# Cursor = Connection.cursor()
-# printall()
-# entry = Entry("abc", 123)
-# addEntry(entry)
-# dbfs.addEntry(Entry("1234","12345123"))
-# dbfs.addEntry(Entry("abd","afe"))
-# dbfs.addEntry(Entry("234234","sferg"))
-# printall()
-# entry.password = "1235565"
-# changeEntry(entry)
-# printall()
-# removeEntry(entry)
-# printall()
-
-# Connection.commit()
-# Connection.close()

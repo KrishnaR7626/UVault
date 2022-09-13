@@ -10,8 +10,8 @@ def createDatabase(Cursor):
 def addEntry(Cursor, entry):
     Cursor.execute("INSERT INTO Passwords VALUES(?, ?)", (entry.purpose, entry.password))
 
-def removeEntry(Cursor, entry):
-    Cursor.execute("DELETE FROM Passwords WHERE purpose = ?", (entry.purpose,))
+def removeEntry(Cursor, purpose):
+    Cursor.execute("DELETE FROM Passwords WHERE purpose = ?", (purpose,))
     
 def changeEntry(Cursor, entry):
     Cursor.execute("UPDATE Passwords SET password = ? WHERE purpose = ?",(entry.password, entry.purpose))
@@ -19,5 +19,7 @@ def changeEntry(Cursor, entry):
 def retrieveEntry(Cursor, purpose):
     Cursor.execute("SELECT password FROM Passwords WHERE purpose = ?", (purpose,))
     password = Cursor.fetchone()
-    return password
-    
+    if password != None:
+        return password[0]
+    else:
+        return password
