@@ -91,12 +91,9 @@ class UVaultTests(unittest.TestCase):
         entropies = ["abacus","abadan","abaft","abamp","abase","abash","abasia","abasic","abate","abatic","abatis","abaya","abbacy","abbe","abbess","abbey","abbot","abcs","abdias","abduce"]
         for entropy in entropies:
             self.assertEqual(PasswordGenerationFunctions.generateKey(entropy, salt), hashlib.sha256((entropy+str(salt)).encode()).hexdigest())
-        def generatePin(length):
-            pin = ""
-            for i in range(length):
-                pin+=str(random.randint(0,9))
-            return pin
-        pass
+
+        for length in range(100):
+            self.assertEqual(len(PasswordGenerationFunctions.generatePin(length)) , length)
 
     def testEncryption(self):
         pass
