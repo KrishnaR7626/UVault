@@ -95,7 +95,7 @@ class UVaultTests(unittest.TestCase):
         for length in range(100):
             self.assertEqual(len(PasswordGenerationFunctions.generatePin(length)) , length)
 
-    def testEncryption(self):
+    def testEncryptionFunctions(self):
         pass
    
 if __name__ == '__main__':
