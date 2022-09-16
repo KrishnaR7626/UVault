@@ -19,10 +19,7 @@ def generatePin(length):
 def generatePassword(path):
     if path == None:
         path = os.getcwd()+"/Resources/WordList.txt"
-    try:
-        file = open(path, 'r')
-    except:
-        print("Error accessing resources, invalid path \n{}".format(path))
+    file = open(path, 'r')
 
     words = file.readlines()
     password = ""

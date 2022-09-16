@@ -7,15 +7,13 @@ import random
 import hashlib
 
 # Importing procedure
-os.chdir("..")
-path = os.getcwd()+'/Python'
+path = os.path.abspath('..')+'/Python'
 
 sys.path.insert(1, path)
 from Entry import Entry
 import DatabaseFunctions as DatabaseFunctions
 import PasswordGenerationFunctions as PasswordGenerationFunctions
 import DatabaseEncryptionFunctions as DatabaseEncryptionFunctions
-os.chdir("Tests")
 
 # Removes previous Entry so that it can create a fresh database
 os.remove('UVault.db')
@@ -131,7 +129,8 @@ class UVaultTests(unittest.TestCase):
         self.assertFalse(DatabaseEncryptionFunctions.checksum(Cursor))
         DatabaseFunctions.addEntry(Cursor, Entry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5"))
         self.assertTrue(DatabaseEncryptionFunctions.checksum(Cursor))
-
+        os.chdir("../Python")
+        
 
 if __name__ == '__main__':
     unittest.main()
