@@ -3,19 +3,23 @@ import DatabaseFunctions
 import cryptography
 from DatabaseFunctions import retrieveEntry
 from Cryptodome.Cipher import AES
-
+import os
+from Cryptodome.Random import get_random_bytes
+import hashlib
 def encryptDatabase(password):
 
-    os.chdir("../Database")
+    os.chdir("Database")
     exception = [1, 1, 1]
     salt = get_random_bytes(256)
     with open("salt", "wb") as saltfile:
         saltfile.write(salt)
         exception[0] = 0
+        print("Done salt")
 
     with open("UVault.db", "rb") as datafile:
         data = datafile.read()
         exception[1] = 0
+        print("Done Read")
     
     with open("UVault.enc", "wb") as dataenc:
         key = hashlib.scrypt(password, salt=salt, n=2**14, r=8, p=1, dklen=32)
@@ -23,6 +27,7 @@ def encryptDatabase(password):
         ciphertext, tag = cipher.encrypt_and_digest(data)
         [dataenc.write(x) for x in (cipher.nonce, tag, ciphertext) ]
         exception[2] = 0
+        print("Done write")
 
     if 1 in exception:
         os.remove("UVault.enc")
@@ -30,9 +35,10 @@ def encryptDatabase(password):
         return False
     else:
         os.remove("UVault.db")
+        print("clean exit")
     os.chdir("../Python")
 
-def decryptDatabase(key):
+def decryptDatabase(password):
     os.chdir("../Database")
     exception = [1, 1, 1]
     with open("salt", "rb") as saltfile:
@@ -50,7 +56,7 @@ def decryptDatabase(key):
         datafile.write(data)
         exception[2] = 0
 
-    if 1 in exception or checksum(Cursor):
+    if 1 in exception:
         os.remove("UVault.db")
         os.chdir("../Python")
         return False

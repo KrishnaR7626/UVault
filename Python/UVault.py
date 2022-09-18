@@ -6,6 +6,8 @@ from Cryptodome.Cipher import AES
 import os
 
 
+os.chdir("../Database")
+print(hashfile("UVault.db"))
 
 
 # os.chdir("../Database")
@@ -33,24 +35,24 @@ import os
 # print("Done Encrypting and saving")
 
 
-os.chdir("../Database")
-exception = [1, 1, 1]
-with open("salt", "rb") as saltfile:
-    salt = saltfile.read()
-    exception[0] = 0
+# os.chdir("../Database")
+# exception = [1, 1, 1]
+# with open("salt", "rb") as saltfile:
+#     salt = saltfile.read()
+#     exception[0] = 0
 
-with open("UVault.enc", "rb") as dataenc:
-    nonce, tag, ciphertext = [ dataenc.read(x) for x in (16, 16, -1) ]
-    key = hashlib.scrypt(password, salt=salt, n=2**14, r=8, p=1, dklen=32)
-    cipher = AES.new(key, AES.MODE_GCM, nonce)
-    data = cipher.decrypt_and_verify(ciphertext, tag)
-    exception[1] = 0
+# with open("UVault.enc", "rb") as dataenc:
+#     nonce, tag, ciphertext = [ dataenc.read(x) for x in (16, 16, -1) ]
+#     key = hashlib.scrypt(password, salt=salt, n=2**14, r=8, p=1, dklen=32)
+#     cipher = AES.new(key, AES.MODE_GCM, nonce)
+#     data = cipher.decrypt_and_verify(ciphertext, tag)
+#     exception[1] = 0
 
-with open("UVault.db", "wb") as datafile:
-    datafile.write(data)
-    exception[2] = 0
+# with open("UVault.db", "wb") as datafile:
+#     datafile.write(data)
+#     exception[2] = 0
 
-if 1 in exception :#or checksum(Cursor):
-    os.chdir("../Python")
-else:
-    os.remove("UVault.enc")
+# if 1 in exception :#or checksum(Cursor):
+#     os.chdir("../Python")
+# else:
+#     os.remove("UVault.enc")

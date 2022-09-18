@@ -21,6 +21,16 @@ os.remove('UVault.db')
 
 Connection = sqlite3.connect('UVault.db') 
 Cursor = Connection.cursor()
+
+def hashfile(file):
+   sha256 = hashlib.sha256()
+   with open(file,'rb') as content:
+       block = 0
+       while block != b'':
+           block = content.read(1024)
+           sha256.update(block)
+   return sha256.hexdigest()
+
 class UVaultTests(unittest.TestCase):
     #Done
     def testDataBase(self):
@@ -106,10 +116,10 @@ class UVaultTests(unittest.TestCase):
         for length in range(100):
             self.assertEqual(len(PasswordGenerationFunctions.generatePin(length)) , length)
 
+        os.chdir("..")
+        path = os.getcwd()+'/Python/Resources/WordList.txt'
+        os.chdir("Tests")
         for i in range(100):
-            os.chdir("..")
-            path = os.getcwd()+'/Python/Resources/WordList.txt'
-            os.chdir("Tests")
             password = PasswordGenerationFunctions.generatePassword(path)
             num = 0
             chars = 0
@@ -129,9 +139,20 @@ class UVaultTests(unittest.TestCase):
         self.assertFalse(DatabaseEncryptionFunctions.checksum(Cursor))
         DatabaseFunctions.addEntry(Cursor, Entry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5"))
         self.assertTrue(DatabaseEncryptionFunctions.checksum(Cursor))
-        os.chdir("../Python")
         
+        os.chdir("../Database")
+        DatabaseEncryptionFunctions.decryptDatabase(str.encode("Password"))
+        print(os.getcwd())
+        original = hashfile("UVault.db")
+        # os.chdir("..")
+        DatabaseEncryptionFunctions.encryptDatabase(str.encode("Password"))
+        self.assertNotEqual(original, hashfile("UVault.enc"))
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
     Connection.close()
+
+    
