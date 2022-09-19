@@ -23,3 +23,8 @@ def retrieveEntry(Cursor, purpose):
         return password[0]
     else:
         return password
+
+def retrieveAll(Cursor):
+    Cursor.execute("SELECT * FROM Passwords")
+    password = Cursor.fetchall()
+    return password

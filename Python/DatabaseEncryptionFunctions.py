@@ -30,6 +30,7 @@ def encryptDatabase(password):
         return False
     else:
         os.remove("UVault.db")
+        return True
 
 def decryptDatabase(password):
     exception = [1, 1, 1]
@@ -53,6 +54,7 @@ def decryptDatabase(password):
         return False
     else:
         os.remove("UVault.enc")
+        return True
 
 
 

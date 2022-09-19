@@ -7,7 +7,7 @@ import random
 import hashlib
 
 # Importing procedure
-path = os.path.abspath('..')+'/Python'
+path = os.getcwd()+'/Python'
 
 sys.path.insert(1, path)
 from Entry import Entry
@@ -16,13 +16,13 @@ import PasswordGenerationFunctions as PasswordGenerationFunctions
 import DatabaseEncryptionFunctions as DatabaseEncryptionFunctions
 
 # Removes previous Entry so that it can create a fresh database
+os.chdir("Tests")
 try:
     os.remove('UVault.db')
     os.remove('salt')
     os.remove('UVault.enc')
 except:
     pass
-
 Connection = sqlite3.connect('UVault.db') 
 Cursor = Connection.cursor()
 
@@ -53,6 +53,7 @@ class UVaultTests(unittest.TestCase):
         DatabaseFunctions.addEntry(Cursor, entry4)
         DatabaseFunctions.addEntry(Cursor, entry5)
         DatabaseFunctions.addEntry(Cursor, entry6)
+        print(DatabaseFunctions.retrieveAll(Cursor))
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "checksum"), "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User1"), "Password1")        
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User2"), "Password2")
@@ -119,7 +120,6 @@ class UVaultTests(unittest.TestCase):
 
         for length in range(100):
             self.assertEqual(len(PasswordGenerationFunctions.generatePin(length)) , length)
-
         os.chdir("..")
         path = os.getcwd()+'/Python/WordList.txt'
         os.chdir("Tests")
