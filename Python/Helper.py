@@ -13,8 +13,6 @@ def checkAnswer(answer):
         return False
 
 def checkState():
-    initial = os.getcwd()
-    os.chdir("../Database")
     files = os.listdir()
     os.chdir(initial)
     if "UVault.db" in files:

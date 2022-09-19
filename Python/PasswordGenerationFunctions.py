@@ -18,7 +18,7 @@ def generatePin(length):
     
 def generatePassword(path):
     if path == None:
-        path = os.getcwd()+"/Resources/WordList.txt"
+        path = "WordList.txt"
     file = open(path, 'r')
 
     words = file.readlines()

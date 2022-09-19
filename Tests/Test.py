@@ -16,8 +16,12 @@ import PasswordGenerationFunctions as PasswordGenerationFunctions
 import DatabaseEncryptionFunctions as DatabaseEncryptionFunctions
 
 # Removes previous Entry so that it can create a fresh database
-os.remove('UVault.db')
-
+try:
+    os.remove('UVault.db')
+    os.remove('salt')
+    os.remove('UVault.enc')
+except:
+    pass
 
 Connection = sqlite3.connect('UVault.db') 
 Cursor = Connection.cursor()
@@ -117,7 +121,7 @@ class UVaultTests(unittest.TestCase):
             self.assertEqual(len(PasswordGenerationFunctions.generatePin(length)) , length)
 
         os.chdir("..")
-        path = os.getcwd()+'/Python/Resources/WordList.txt'
+        path = os.getcwd()+'/Python/WordList.txt'
         os.chdir("Tests")
         for i in range(100):
             password = PasswordGenerationFunctions.generatePassword(path)
@@ -132,7 +136,6 @@ class UVaultTests(unittest.TestCase):
                 self.fail()
             
     def testEncryptionFunctions(self):
-
         # Checksum Function Testing
         self.assertTrue(DatabaseEncryptionFunctions.checksum(Cursor))
         DatabaseFunctions.removeEntry(Cursor, "checksum")
@@ -140,15 +143,20 @@ class UVaultTests(unittest.TestCase):
         DatabaseFunctions.addEntry(Cursor, Entry("checksum", "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5"))
         self.assertTrue(DatabaseEncryptionFunctions.checksum(Cursor))
         
-        os.chdir("../Database")
-        DatabaseEncryptionFunctions.decryptDatabase(str.encode("Password"))
-        print(os.getcwd())
-        original = hashfile("UVault.db")
-        # os.chdir("..")
+        originalHash = hashfile("UVault.db")
         DatabaseEncryptionFunctions.encryptDatabase(str.encode("Password"))
-        self.assertNotEqual(original, hashfile("UVault.enc"))
+        encryptedHash = hashfile("UVault.enc")
+        self.assertNotEqual(originalHash, encryptedHash)
+        files = os.listdir()
+        if "UVault.db" in files:
+            self.fail()
 
-
+        DatabaseEncryptionFunctions.decryptDatabase(str.encode("Password"))
+        self.assertTrue(originalHash,hashfile("UVault.db"))
+        self.assertTrue(DatabaseEncryptionFunctions.checksum(Cursor))
+        files = os.listdir()
+        if "UVault.enc" in files:
+            self.fail()
 
 
 if __name__ == '__main__':
