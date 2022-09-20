@@ -113,7 +113,8 @@ while using:
         purpose = input("What would you like to name this password?\n")
         entry = Entry(purpose, password)
         addEntry(Cursor, entry)
-        display("Password entry created \n{}: {}:".format(purpose,password))
+        Connection.commit()
+        display("Password entry created: \n{}: {}:".format(purpose,password))
     elif choice == 3:
         purpose = input("Enter the name of the password to update: ")
         choice = 0
@@ -137,11 +138,14 @@ while using:
         elif choice == 4:
             password = input("Please enter your password now: ")
         changeEntry(Cursor, Entry(purpose, password))
+        Connection.commit()
     elif choice == 4:
         purpose = input("Enter the name of the password to remove: ")
         removeEntry(Cursor,purpose)
+        Connection.commit()
     else:
-        print("Exiting")
+        Connection.close()
         using = False
         encryptDatabase(str.encode(Password))
+        print("Exiting")
 os.chdir("..")

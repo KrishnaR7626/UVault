@@ -36,7 +36,6 @@ def hashfile(file):
    return sha256.hexdigest()
 
 class UVaultTests(unittest.TestCase):
-    #Done
     def testDataBase(self):
         DatabaseFunctions.createDatabase(Cursor)
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "checksum"), "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
@@ -53,7 +52,6 @@ class UVaultTests(unittest.TestCase):
         DatabaseFunctions.addEntry(Cursor, entry4)
         DatabaseFunctions.addEntry(Cursor, entry5)
         DatabaseFunctions.addEntry(Cursor, entry6)
-        print(DatabaseFunctions.retrieveAll(Cursor))
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "checksum"), "bccd30e889cb6af72091f5faf246c4f2b2e27fde2fcff73cf86440ce94810af5")
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User1"), "Password1")        
         self.assertEqual(DatabaseFunctions.retrieveEntry(Cursor, "User2"), "Password2")
@@ -90,7 +88,7 @@ class UVaultTests(unittest.TestCase):
 
 
 
-    #Done
+    
     def testEntryObject(self):
         entry1 = Entry("User1", "Password1")
         entry2 = Entry("User2", "Password2")
