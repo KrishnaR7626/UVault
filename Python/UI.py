@@ -3,7 +3,7 @@ from colorama import Fore, Style, init
 def display(text):
     print("\n{}\n".format(text))
 def banner():
-    print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + + "")
+    print(Fore.LIGHTYELLOW_EX + Style.BRIGHT + "")
     print('-'*65)
     print(r'                                                                   ')
     print(r'88        88  8b           d8                         88           ')

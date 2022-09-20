@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import sqlite3
 import os
+from getpass import getpass
+
 from DatabaseEncryptionFunctions import decryptDatabase
 from DatabaseEncryptionFunctions import encryptDatabase
 from DatabaseEncryptionFunctions import checksum
@@ -17,21 +19,24 @@ from Helper import checkState
 from Helper import checkAnswer
 from UI import display
 from UI import banner
+from Entry import Entry
 
 
 os.chdir("Python")
 unlocked = False
 Password = None
+banner()
 while not unlocked:
     if checkState():
-        Password = input("Encrypted database found please enter the password")
-        if decryptDatabase(Password):
-            Connection = sqlite3.connect('UVault.db') 
+        print("Encrypted database found please enter the password")
+        Password = getpass()
+        if decryptDatabase(str.encode(Password)):
+            Connection = sqlite3.connect('UVault.db')
             Cursor = Connection.cursor()
-            if checksum(cursor):
+            if checksum(Cursor):
                 display("Incorrect Password")
             else:
-                diplay("Database Unlocked")
+                display("Database Unlocked")
                 unlocked = True
         else:
             display("Error Decrypting Database")
@@ -44,6 +49,15 @@ while not unlocked:
             if checksum(Cursor):
                 unlocked = True
                 display("Successfully created new database")
+                while True:
+                    print("Enter password to encrypt database: ")
+                    Password = getpass()
+                    print("Confirm password: ")
+                    password = getpass()
+                    if Password == password:
+                        break
+                    else:
+                        display("Passwords do not match")
             else:
                 display("Error creating database")
         else:
@@ -56,10 +70,10 @@ while using:
     answers = [1,2,3,4,5]
     choice = 0
     while choice not in answers: 
-        print("Press 1 to retrieve a password")
+        print("\nPress 1 to retrieve a password")
         print("Press 2 to create a password")
-        print("Press 3 to delete a password")
-        print("Press 4 to update a password")
+        print("Press 3 to update a password")
+        print("Press 4 to delete a password")
         print("Press 5 to exit")
         try:
             choice = int(input())
@@ -67,11 +81,14 @@ while using:
             pass
 
     if choice == 1:
-        purpose = input("Enter the name of the password or press enter to show all")
+        purpose = input("Enter the name of the password or press enter to show all:\n")
         if purpose != "":
             password = retrieveEntry(Cursor, purpose)
+            print("{}: {}".format(purpose,password))
         else:
             passwords = retrieveAll(Cursor)
+            for password in passwords:
+                print(password)
     elif choice == 2:
         choice = 0
         while choice not in answers:
@@ -84,23 +101,47 @@ while using:
             except:
                 pass
         if choice == 1:
-            password = generateKey()
+            entropy = input("Enter random characters for entropy: ")
+            password = generateKey(entropy, None)
         elif choice == 2:
-            password = generatePin()
+            length = int(input("How long should the PIN be: "))
+            password = generatePin(length)
         elif choice == 3:
-            password = generatePassword()
+            password = generatePassword(None)
         elif choice == 4:
             password = input("Please enter your password now: ")
-        
         purpose = input("What would you like to name this password?\n")
         entry = Entry(purpose, password)
-        addEntry(entry)
-        display("\nPassword entry created \n{}: {}".format(purpose,password))
+        addEntry(Cursor, entry)
+        display("Password entry created \n{}: {}:".format(purpose,password))
     elif choice == 3:
-        pass
+        purpose = input("Enter the name of the password to update: ")
+        choice = 0
+        while choice not in answers:
+            print("Press 1 to generate a Key")
+            print("Press 2 to generate a Pin")
+            print("Press 3 to generate a Strong Password")
+            print("Press 4 to enter a Custom Password to be stored")
+            try:
+                choice = int(input())
+            except:
+                pass
+        if choice == 1:
+            entropy = input("Enter random characters for entropy: ")
+            password = generateKey(entropy, None)
+        elif choice == 2:
+            length = int(input("How long should the PIN be: "))
+            password = generatePin(length)
+        elif choice == 3:
+            password = generatePassword(None)
+        elif choice == 4:
+            password = input("Please enter your password now: ")
+        changeEntry(Cursor, Entry(purpose, password))
     elif choice == 4:
-        pass
+        purpose = input("Enter the name of the password to remove: ")
+        removeEntry(Cursor,purpose)
     else:
+        print("Exiting")
         using = False
-        encryptDatabase(Password)
+        encryptDatabase(str.encode(Password))
 os.chdir("..")
