@@ -1,11 +1,11 @@
 # File encryption functions
-import DatabaseFunctions
-import cryptography
 from DatabaseFunctions import retrieveEntry
 from Cryptodome.Cipher import AES
-import os
 from Cryptodome.Random import get_random_bytes
+
+import os
 import hashlib
+
 def encryptDatabase(password):
 
     exception = [1, 1, 1]

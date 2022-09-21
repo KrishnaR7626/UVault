@@ -1,6 +1,7 @@
 # Database Functions
-import sqlite3
 from Entry import Entry
+
+import sqlite3
 
 def createDatabase(Cursor):
     Cursor.execute("CREATE TABLE Passwords(purpose text, password text)")

@@ -7,6 +7,7 @@ import os
 
 # Main helper functions
 def checkAnswer(answer):
+    answer = str(answer)
     if answer == 'Y' or answer == 'y'or answer == None:
         return True
     else:
