@@ -75,7 +75,7 @@ while using:
     answers = [1,2,3,4,5]
     choice = 0
     while choice not in answers: 
-        print("Press 1 to retrieve a password")
+        print("\nPress 1 to retrieve a password")
         print("Press 2 to create a password")
         print("Press 3 to update a password")
         print("Press 4 to delete a password")
