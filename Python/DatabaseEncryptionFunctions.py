@@ -29,6 +29,10 @@ def encryptDatabase(password):
         os.remove("UVault.enc")
         return False
     else:
+        size = os.path.getsize("UVault.db")
+        db = open("UVault.db", "wb")
+        db.write(b''*size)
+        db.close()
         os.remove("UVault.db")
         return True
 
