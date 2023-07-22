@@ -7,10 +7,6 @@
 #sudo apt-get -y install python3
 #sudo apt -y install python3-pip 
 
-# RHEL
-#sudo dnf -y install python3
-#sudo dnf -y install python3            
-
 # Arch
 #sudo pacman -Sy python3
 #sudo pacman -Sy python-pip             
