@@ -7,4 +7,4 @@ To install dependencies run:
 
 To start and access password manager run:
 
-python3 Python/UVault.py
+python3 UVault.py
