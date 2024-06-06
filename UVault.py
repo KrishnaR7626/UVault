@@ -1,12 +1,11 @@
 from Cryptodome.Cipher import AES
 from Cryptodome.Random import get_random_bytes
+from Cryptodome.Random.random import randint
 from colorama import Fore, Style
 from getpass import getpass
 import os
 import hashlib
 import sqlite3
-import random
-import time
 import signal
 import sys
 
@@ -62,7 +61,7 @@ def banner():
 # Password Generation Functions
 def generateKey(entropy, salt):
     if salt == None:
-        salt = time.time()
+        salt = get_random_bytes(256)
     cipher = entropy+str(salt)  
     key = hashlib.sha256(cipher.encode())
     return key.hexdigest()
@@ -70,7 +69,7 @@ def generateKey(entropy, salt):
 def generatePin(length):
     pin = ""
     for i in range(length):
-        pin+=str(random.randint(0,9))
+        pin+=str(randint(0,9))
     return pin
     
 def generatePassword():
@@ -78,9 +77,9 @@ def generatePassword():
     password = ""
     specialCharacter = "!@#$%^&*()"
     for i in range(5):
-        password+=words[random.randint(0, len(words)-1)]
-        password+=specialCharacter[random.randint(0,len(specialCharacter)-1)]
-        password+=str(random.randint(0,1000))
+        password+=words[randint(0, len(words)-1)]
+        password+=specialCharacter[randint(0,len(specialCharacter)-1)]
+        password+=str(randint(0,1000))
     return password
 # Password Generation Functions end
 
